@@ -78,8 +78,8 @@ let afterServerStart = (async () => {
 });
 
 let serverOptions = {
-  key: fs.readFileSync(__dirname + '/server-key.pem'),
-  cert: fs.readFileSync(__dirname + '/server-cert.pem'),
+  key: fs.readFileSync(__dirname + '/certificates/server-key.pem'),
+  cert: fs.readFileSync(__dirname + '/certificates/server-cert.pem'),
   spdy: {
     protocols: [ 'h2', 'spdy/3.1', 'http/1.1' ]
   }

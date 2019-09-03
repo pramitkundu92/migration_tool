@@ -33,12 +33,20 @@ function updateMultipleStatus(mappings, status) {
     });
 }
 
+// change paths based on os
+function modifyPaths(url) {
+    return process.platform.indexOf('win') > -1 ? url.replace(/\//g, '\\') : url;
+}
+function createClasspath(paths) {
+    return paths.join(process.platform.indexOf('win') > -1 ? ';' : ':');
+}
+ 
 function triggerMigrationForMapping(mapping) {
     return new Promise((resolve,reject)=>{
         let repoData = Cache.getInstance().getItem('repositoryInfo'),
-            classpath = `${__dirname}/executables/migration_tool/`;
+            classpath = createClasspath([`${__dirname}/executables/migration_tool/`]);
         let cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`;
-        exec(cmd, (err, stdout, stderr)=>{
+        exec(modifyPaths(cmd), (err, stdout, stderr)=>{
             if(err || stderr) {
                 reject('failure');
             }
@@ -59,9 +67,13 @@ module.exports = {
     getFolderMappings: ()=>{
         return new Promise((resolve,reject)=>{
             let data = Cache.getInstance().getItem('databaseInfo'),
-                classpath = `${__dirname}/executables/dependency/java-json.jar:${__dirname}/executables/dependency/ojdbc8.jar:${__dirname}/executables/json_generation/bin/`;
+                classpath = createClasspath([
+                    `${__dirname}/executables/dependency/java-json.jar`,
+                    `${__dirname}/executables/dependency/ojdbc8.jar`,
+                    `${__dirname}/executables/json_generation/bin/`
+                ]);
             let cmd = `java -cp ${classpath} JDBCConnection ${data.dbName} ${data.dbPort} ${data.dbUser} ${data.dbPass} ${data.dbService}`;
-            exec(cmd, (err, stdout, stderr)=>{
+            exec(modifyPaths(cmd), (err, stdout, stderr)=>{
                 if(err) {
                     reject(err);
                 }
