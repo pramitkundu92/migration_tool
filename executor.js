@@ -34,18 +34,6 @@ function updateMultipleStatus(mappings, status) {
     });
 }
 
-// create log file from tool output
-function createLogFile(mapping, output) {
-    return new Promise((resolve, reject)=>{
-        fs.writeFile(modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`), output, (err)=>{
-            if(err) {
-                console.log('Error while writing logs to file');
-            }
-            resolve();
-        });
-    });
-}
-
 // change paths based on os
 function modifyPaths(url) {
     let cmd = process.platform.indexOf('win32') > -1 ? url.replace(/\//g, '\\') : url;
@@ -62,28 +50,8 @@ function triggerMigrationForMapping(mapping) {
     return new Promise((resolve,reject)=>{
         let repoData = Cache.getInstance().getItem('repositoryInfo'),
             classpath = createClasspath([`${__dirname}/executables/migration_tool/`]),
-            cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`;
-        /*
-        exec(modifyPaths(cmd), (err, stdout, stderr)=>{
-            if(err || stderr) {
-                createLogFile(mapping, err || stderr).then(resp=>{
-                    reject('failure');
-                });                
-            }
-            else {
-                let output = stdout.trim();
-                createLogFile(mapping, output).then(resp=>{
-                    if(output.indexOf('ObjectImport completed successfully')) {
-                        resolve('success');
-                    }
-                    else {
-                        reject('failure');
-                    }
-                });
-            }
-        });
-        */
-        let logFileName = modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`);
+            cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`,
+            logFileName = modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`);
         fs.unlink(logFileName, (err)=>{
             let sp = exec(modifyPaths(cmd)), 
                 stream = fs.createWriteStream(logFileName, {flags:'a'});
