@@ -61,9 +61,9 @@ function createClasspath(paths) {
 function triggerMigrationForMapping(mapping) {
     return new Promise((resolve,reject)=>{
         let repoData = Cache.getInstance().getItem('repositoryInfo'),
-            classpath = createClasspath([`${__dirname}/executables/migration_tool/`]);
-        let cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`;
-        console.log(`\n${modifyPaths(cmd)}\n`);
+            classpath = createClasspath([`${__dirname}/executables/migration_tool/`]),
+            cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`;
+        /*
         exec(modifyPaths(cmd), (err, stdout, stderr)=>{
             if(err || stderr) {
                 createLogFile(mapping, err || stderr).then(resp=>{
@@ -82,8 +82,34 @@ function triggerMigrationForMapping(mapping) {
                 });
             }
         });
+        */
+        let logFileName = modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`);
+        fs.unlink(logFileName, (err)=>{
+            let sp = exec(modifyPaths(cmd)), 
+                stream = fs.createWriteStream(logFileName, {flags:'a'});
+            sp.stdout.on('data', function (data) {
+                stream.write(`${data.toString()}\n`);
+            });
+            sp.stderr.on('data', function (data) {
+                stream.write(`${data.toString()}\n`);
+            });
+            sp.on('error', function(err) {
+                stream.end();
+                reject('failure');
+            });
+            sp.on('exit', function (code) {
+                stream.end();
+                let output = fs.readFileSync(logFileName);
+                if(output.indexOf('ObjectImport completed successfully') > -1) {
+                    resolve('success');
+                }
+                else {
+                    reject('failure');
+                }
+            });
+        });
     });
-}
+}        
 
 module.exports = {
     getFolderMappings: ()=>{
