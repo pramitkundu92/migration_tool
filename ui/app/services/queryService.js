@@ -9,6 +9,7 @@ export default class QueryService {
         this.repositoryUrl = '/repository';
         this.savedDataUrl = '/savedData';
         this.migrationUrl = '/startMigration';
+        this.typesUrl = '/getMappingTypes';
     }
 
     getHeaders() {
@@ -66,6 +67,16 @@ export default class QueryService {
     startMigration(mappings) {
         return new Promise((resolve, reject)=>{
             axios.post(this.buildUrl(this.migrationUrl), mappings, this.getExtraOptions()).then(({data})=>{
+                resolve(data);
+            }, err=>{
+                reject(err);
+            });
+        });
+    }
+
+    getMappingTypes() {
+        return new Promise((resolve, reject)=>{
+            axios.get(this.buildUrl(this.typesUrl), this.getExtraOptions()).then(({data})=>{
                 resolve(data);
             }, err=>{
                 reject(err);

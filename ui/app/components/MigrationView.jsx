@@ -16,12 +16,21 @@ class MigrationView extends Component {
         this.queryService = new QueryService();
         this.state = {
             "tableData": [],
+            "types": {},
             "disableStartBtn": false
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.queryService.getMappingTypes().then(({types})=>{
+            this.safeUpdateState(prevState=>{
+                prevState.types = types;
+                return prevState;
+            });
+        }, err=>{
+            console.error(err);
+        });
     }
 
     componentWillUnmount() {
@@ -43,11 +52,18 @@ class MigrationView extends Component {
         this.queryService.startMigration(data).then(resp=>{
             this.safeUpdateState(prevState=>{
                 prevState.disableStartBtn = true;
+                if(data.length > 0) {
+                    prevState.types = {
+                        'source': data[0].source,
+                        'target': data[0].target,
+                        'connection': data[0].connection
+                    };
+                }
                 return prevState;
             });
         }, err=>{
             console.error(err);
-        })
+        });
     }
 
     render(){
@@ -58,7 +74,7 @@ class MigrationView extends Component {
                         <MappingTree mappingTreeUpdate={this.mappingTreeUpdate.bind(this)} />
                     </Grid>
                     <Grid item xs={12} sm={8} md={9}>
-                        <ProgressTable data={this.state.tableData} disableStartBtn={this.state.disableStartBtn} startMigration={this.startMigration.bind(this)} />
+                        <ProgressTable data={this.state.tableData} disableStartBtn={this.state.disableStartBtn} startMigration={this.startMigration.bind(this)} types={this.state.types} />
                     </Grid>
                 </Grid>
             </Container>

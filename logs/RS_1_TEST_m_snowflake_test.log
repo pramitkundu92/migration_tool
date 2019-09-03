@@ -1,0 +1,17 @@
+Error: Command failed: java -Xbootclasspath/p:D:/informatica_10202_client_winem-64t/informatica_10202_client_winem-64t/source/clients/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp /Users/pkundu/work/concepts/fast_server/executables/migration_tool/ -jar /Users/pkundu/work/concepts/fast_server/executables/migration_tool/migrator.jar TEST m_snowflake_test teradata SnowflakeCloudDataWarehouse SnowflakeCloudDataWarehouse1
+java.io.FileNotFoundException: resources\pcconfig.properties (No such file or directory)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at com.infa.pc.migration.utils.SampleMappingMigrator.<clinit>(SampleMappingMigrator.java:32)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+	at org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader.main(JarRsrcLoader.java:56)
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:348)
+	at org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader.main(JarRsrcLoader.java:56)
+Caused by: java.lang.NullPointerException
+	at com.infa.pc.migration.utils.SampleMappingMigrator.<clinit>(SampleMappingMigrator.java:39)
+	... 3 more

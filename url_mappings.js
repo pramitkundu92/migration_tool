@@ -36,7 +36,7 @@ function saveRepositoryInfo(req, res) {
 
 function updateConfigFromTemplate(data) {
     return new Promise((resolve, reject)=>{
-        let template = path.join(__dirname, './templates/pcconfig.tmpl'), target = path.join(__dirname, './executables/migration_tool/resources/pcconfig.properties');
+        let template = path.join(__dirname, './templates/pcconfig.tmpl'), target = path.join(__dirname, './resources/pcconfig.properties');
         renderTemplateFile(template, {...data.repo, ...data.database}).then(renderStr=>{
             fs.unlink(target, err=>{
                 fs.writeFile(target, renderStr, err=>{
@@ -58,8 +58,8 @@ function updateConfigFromTemplate(data) {
 
 function getSavedData(req, res) {
     res.json({
-        'repo': Cache.getInstance().getItem('repositoryInfo'),
-        'database': Cache.getInstance().getItem('databaseInfo')
+        'repo': Cache.getInstance().getItem('repositoryInfo') || {},
+        'database': Cache.getInstance().getItem('databaseInfo') || {}
     });
     res.status(200);
 }
@@ -74,12 +74,24 @@ function startMigration(req, res) {
     });
 }
 
+function getMappingTypes(req, res) {
+    res.json({
+        'types': Cache.getInstance().getItem('types') || {
+            'source': '',
+            'target': '',
+            'connection': ''
+        }
+    });
+    res.status(200);
+}
+
 // initialize the API routes and associate controllers
 UrlMappings.prototype.init = function() {
     this.router.get('/savedData', getSavedData.bind(this));
     this.router.get('/mappings', getMappings.bind(this));
     this.router.post('/repository', saveRepositoryInfo.bind(this));
     this.router.post('/startMigration', startMigration.bind(this));
+    this.router.get('/getMappingTypes', getMappingTypes.bind(this));
 }
 
 module.exports = UrlMappings;

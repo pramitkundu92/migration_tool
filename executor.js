@@ -1,4 +1,5 @@
 const exec = require('child_process').exec;
+const fs = require('fs');
 
 const Cache = require('./cache.js');
 const EventBus = require('./event_bus.js');
@@ -33,12 +34,28 @@ function updateMultipleStatus(mappings, status) {
     });
 }
 
+// create log file from tool output
+function createLogFile(mapping, output) {
+    return new Promise((resolve, reject)=>{
+        fs.writeFile(modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`), output, (err)=>{
+            if(err) {
+                console.log('Error while writing logs to file');
+            }
+            resolve();
+        });
+    });
+}
+
 // change paths based on os
 function modifyPaths(url) {
-    return process.platform.indexOf('win') > -1 ? url.replace(/\//g, '\\') : url;
+    let cmd = process.platform.indexOf('win32') > -1 ? url.replace(/\//g, '\\') : url;
+    if(cmd.indexOf('-Xbootclasspath\\p')) {
+        cmd = cmd.replace('-Xbootclasspath\\p', '-Xbootclasspath/p');
+    }
+    return cmd;
 }
 function createClasspath(paths) {
-    return paths.join(process.platform.indexOf('win') > -1 ? ';' : ':');
+    return paths.join(process.platform.indexOf('win32') > -1 ? ';' : ':');
 }
  
 function triggerMigrationForMapping(mapping) {
@@ -46,18 +63,23 @@ function triggerMigrationForMapping(mapping) {
         let repoData = Cache.getInstance().getItem('repositoryInfo'),
             classpath = createClasspath([`${__dirname}/executables/migration_tool/`]);
         let cmd = `java -Xbootclasspath/p:${repoData.clientPath}/PowerCenterClient/MappingSDK/lib/externals/jaxb/lib/jaxb-impl.jar -cp ${classpath} -jar ${__dirname}/executables/migration_tool/migrator.jar ${mapping.folderName} ${mapping.mappingName} ${mapping.source} ${mapping.target} ${mapping.connection}`;
+        console.log(`\n${modifyPaths(cmd)}\n`);
         exec(modifyPaths(cmd), (err, stdout, stderr)=>{
             if(err || stderr) {
-                reject('failure');
+                createLogFile(mapping, err || stderr).then(resp=>{
+                    reject('failure');
+                });                
             }
             else {
                 let output = stdout.trim();
-                if(output.indexOf('Object created successfully')) {
-                    resolve('success');
-                }
-                else {
-                    reject('failure');
-                }
+                createLogFile(mapping, output).then(resp=>{
+                    if(output.indexOf('ObjectImport completed successfully')) {
+                        resolve('success');
+                    }
+                    else {
+                        reject('failure');
+                    }
+                });
             }
         });
     });

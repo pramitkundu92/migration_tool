@@ -70,6 +70,13 @@ DataProvider.prototype.getMappings = function(config) {
 
 DataProvider.prototype.startMigration = function(mappings) {
     return new Promise((resolve, reject)=>{
+        if(mappings.length > 0) {
+            Cache.getInstance().setItem('types', {
+                'source': mappings[0].source,
+                'target': mappings[0].target,
+                'connection': mappings[0].connection
+            });
+        }
         Executor.startMigration(mappings).then(data=>{
             resolve(data);
         }, err=>{

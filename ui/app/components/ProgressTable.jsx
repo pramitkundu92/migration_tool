@@ -171,7 +171,7 @@ class ProgressTable extends Component {
                             </Table>
                         </CardContent>
                     </Card>
-                    <TransformationInfo opened={this.state.modalOpened} closeModal={this.closeModal.bind(this)} startMigration={this.triggerMigration.bind(this)} />
+                    <TransformationInfo opened={this.state.modalOpened} closeModal={this.closeModal.bind(this)} startMigration={this.triggerMigration.bind(this)} types={this.props.types} />
                 </div>
             );
         }
