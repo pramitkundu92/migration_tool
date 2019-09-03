@@ -1,0 +1,282 @@
+body {
+    margin: 0;
+    font-family: "Roboto", "Helvetica";
+    #app-container {
+        background: #e9e9e9;
+        min-height: 100vh;
+        .infa-logo {
+            height: 55px;
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        .MuiContainer-root.content {
+            padding: 10px !important;
+            top: 80px;
+            position: fixed;
+        }
+        .MuiContainer-root:not(.repo-info) {
+            margin: 0;
+            padding: 0px;
+            min-height: 100vh;
+            min-width: 100%;
+            .heading {
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            header {
+                background: black;
+                color: white;
+                min-height: 60px;
+                font-size: 16px;
+                font-weight: bold;
+                div {
+                    min-height: 60px;
+                    padding: 10px 20px;
+                    border-bottom: 2px solid darkorange;
+                }
+                .brand {
+                    font-weight: 300;
+                }
+            }
+        }
+        .app-card {
+            margin: 10px 0;
+            .expandable-header {
+                padding: 8px 18px;
+                .MuiTypography-root {
+                    padding: 12px 0;
+                }
+                button {
+                    transition: transform 0.2s ease-in-out;
+                }
+                button.collapse {
+                    transform: rotate(180deg);
+                }
+            }
+            .MuiCardHeader-root .MuiTypography-h5 {
+                font-size: 1.1rem;
+            }
+            label.MuiTypography-root {
+                opacity: 0.75;
+                font-size: 14px;
+                text-decoration: underline;
+            }
+            .MuiCardContent-root {
+                overflow-y: auto;
+            }
+        }
+        .mapping-tree {
+            margin: 0 10px 0 0;
+            .MuiPaper-root {
+                height: 100%;
+            }
+            div {
+                font-size: 0.8rem;
+            }
+            button {
+                transition: transform 0.2s ease-in-out;
+                transform: rotate(-90deg);
+                padding: 5px;
+            }
+            button.collapse {
+                transform: rotate(0deg);
+            }
+            .repo-name {
+                font-size: 0.95rem;
+                text-decoration: underline;
+                padding: 5px 5px 5px 11px;
+            }
+            .MuiCheckbox-root {
+                padding: 0;
+                margin-left: -2px; 
+                color: cadetblue;
+            }
+            .folder {
+                cursor: pointer;
+                span {
+                    vertical-align: middle;
+                    font-size: 0.9rem;
+                }
+                .icon {
+                    height: 18px;
+                    width: 18px;
+                    vertical-align: middle;
+                    margin: -2px 5px 0 0;
+                }
+                .MuiCheckbox-root {
+                    vertical-align: -webkit-baseline-middle;
+                    margin-left: -2px;
+                    margin-top: 4px;
+                }
+                .mapping {
+                    font-size: 0.8rem;
+                    padding: 5px 5px 5px 34px;
+                    .MuiCheckbox-root {
+                        vertical-align: none;
+                        margin-left: 0;
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+        .repo-info {
+            .MuiGrid-item {
+                padding: 0 5px;
+            }
+            .MuiFormControl-root {
+                width: 100%;
+                margin: 10px 0;
+                input {
+                    font-size: 0.85rem;
+                }
+            }
+            .MuiTextField-root {
+                label {
+                    font-size: 13px;
+                }
+            }
+            .MuiCardActions-root {
+                justify-content: center;
+                .close {
+                    color: red;
+                }
+                .done {
+                    color: green;
+                }
+            }
+            .app-card {
+                margin: 0;
+            }
+        }
+        .progress-table {
+            margin: 0 10px 0 0;
+            .MuiPaper-root {
+                height: 100%;
+            }
+            .warning {
+                color: goldenrod;
+            }
+            .failed {
+                color: red;
+            }
+            .success {
+                color: green;
+            }
+            .icon {
+                height: 24px;
+                width: 24px;
+            }
+            .stats {
+                font-size: 13px;
+                display: inline-block;
+                padding: 14px 0;
+            }
+            .actions {
+                text-align: right;
+                button {
+                    margin-right: 50px;
+                }
+            }
+            .overall-stats {
+                .MuiGrid-item {
+                    text-align: center;
+                    span {
+                        border: 2px solid grey;
+                        border-radius: 50px;
+                        padding: 10px;
+                        color: grey;
+                        height: 20px;
+                        width: 20px;
+                        display: inline-block;
+                    }
+                }
+                .in-progress > span {
+                    border: 2px solid darkorange;
+                    color: darkorange;
+                }
+                .completed > span {
+                    border: 2px solid green;
+                    color: green;
+                }
+                .failed > span {
+                    border: 2px solid red;
+                    color: red;
+                }
+            }
+            .stat-labels {
+                margin-bottom: 5px;
+                .MuiGrid-item {
+                    text-align: center;
+                    font-size: 11px;
+                }
+                .in-progress > span {
+                    color: darkorange;
+                }
+                .completed > span {
+                    color: green;
+                }
+                .failed > span {
+                    color: red;
+                }
+            }
+            .MuiTable-root {
+                margin-top: 10px;
+                width: 100%;
+                overflow-x: auto;
+                .MuiTableBody-root, .MuiTableHead-root {
+                    .MuiTableRow-root {
+                        .MuiTableCell-root {
+                            padding: 6px;
+                            line-height: 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .app-modal {
+        .app-card {
+            margin: 10px 0;
+            .MuiCardHeader-root .MuiTypography-h5 {
+                font-size: 1.1rem;
+            }
+            label.MuiTypography-root {
+                opacity: 0.75;
+                font-size: 14px;
+                text-decoration: underline;
+            }
+            .MuiCardContent-root {
+                overflow-y: auto;
+            }
+        }
+        .transformation-info {
+            position: absolute;
+            top: 10%;
+            left: 37%;
+            .MuiTextField-root {
+                width: 100%;
+                margin: 5px 0;
+                label {
+                    font-size: 13px;
+                }
+                input {
+                    font-size: 0.85rem;
+                }
+            }
+            .MuiGrid-item {
+                padding: 0 5px;
+            }
+            .MuiCardActions-root {
+                justify-content: center;
+                .close {
+                    color: red;
+                }
+                .done {
+                    color: green;
+                }
+            }   
+        }
+    }
+}

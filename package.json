@@ -1,0 +1,23 @@
+{
+  "name": "fast_server",
+  "version": "1.0.0",
+  "description": "optimized server",
+  "main": "server.js",
+  "scripts": {
+    "start": "cd ui/ && npm run-script build && cd .. && node server.js"
+  },
+  "author": "Pramit Kundu",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^3.0.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "http2": "^3.3.7",
+    "moment": "^2.24.0",
+    "open": "^6.4.0",
+    "request": "^2.88.0",
+    "socket.io": "^2.2.0",
+    "spdy": "^4.0.1",
+    "template-file": "^3.1.0"
+  }
+}

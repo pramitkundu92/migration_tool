@@ -1,0 +1,59 @@
+######################################################
+#
+#
+# PowerCenter Configuration properties
+#
+#######################################################
+
+PC_CLIENT_INSTALL_PATH={{ clientPath }}
+
+TARGET_REPO_NAME={{ repoName }}
+
+REPO_SERVER_HOST={{ gatewayHost }}
+
+REPO_SERVER_PORT={{ gatewayPort }}
+
+ADMIN_USERNAME={{ username }}
+
+ADMIN_PASSWORD={{ password }}
+
+SECURITY_DOMAIN ={{ domain }}
+
+PMREP_CACHE_FOLDER=C:\\temp
+
+###########################################################
+#
+#Repository Connection Details
+#
+###########################################################
+ 
+REPO_DB_USERNAME={{ dbUser }}
+REPO_DB_PASSWORD={{ dbPass }}
+ 
+REPO_DB_HOSTNAME={{ dbName }}
+REPO_DB_SERVICE_NAME={{ dbService }}
+REPO_DB_PORT={{ dbPort }}
+
+######################################################
+#
+#
+# Migration specific properties
+#
+#######################################################
+
+# Folder of original mappings/workflows
+SOURCE_FOLDER_NAME=TEST
+ 
+# Folder of migrated mappings/workflows
+TARGET_FOLDER_NAME=new_demo_namit_final
+ 
+# Type of connection which is to be migrated like Teradata/DB2 etc
+SOURCE_CONNECTION_TYPE=Netezza
+ 
+# Target Type of connection to be migrated
+TARGET_CONNECTION_TYPE=SnowflakeCloudDataWarehouse
+ 
+# Name of the target connection. This should be created before migration is started
+CONNECTIONNAME=SnowflakeCloudDataWarehouse1
+ 
+FOLDERMAP=TEST->>NEW_TEST1-::-Ryderorig_Netezza->>Test1-::-Ryderorig1->>Test2-::-~uswumf7->>NEWFOLDER01-::-FDR_LIB->>NEWFOLDER02
