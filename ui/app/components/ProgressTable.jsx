@@ -17,7 +17,9 @@ import WarningIcon from '@material-ui/icons/Warning';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
+import QueryService from '../services/queryService';
 import TransformationInfo from './TransformationInfo.jsx';
 
 import LoadingIcon from '../assets/images/loading.gif';
@@ -26,11 +28,12 @@ class ProgressTable extends Component {
 
     constructor(props) {
         super(props);
+        this.queryService = new QueryService();
         this.state = {
             'migrationData': [],
             'types': {},
             'modalOpened': false,
-            'fields': [{"label":"Repository","field":"repoName"},{"label":"Folder","field":"folderName"},{"label":"Mapping","field":"mappingName"}]
+            'fields': [{"label":"Repository","field":"repoName"},{"label":"Folder","field":"folderName"},{"label":"Mapping","field":"mappingName"},{"label":"Status","field":"status"},{"label":"Log","field":"log"}]
         }
     }
 
@@ -52,7 +55,7 @@ class ProgressTable extends Component {
     triggerMigration(types) {
         this.setState(prevState=>{
             prevState.types = types;
-            prevState.fields = [{"label":"Repository","field":"repoName"},{"label":"Folder","field":"folderName"},{"label":"Mapping","field":"mappingName"},{"label":"Source","field":"source"},{"label":"Target","field":"target"},{"label":"Connection Name","field":"connection"}];
+            prevState.fields = [{"label":"Repository","field":"repoName"},{"label":"Folder","field":"folderName"},{"label":"Mapping","field":"mappingName"},{"label":"Source","field":"source"},{"label":"Target","field":"target"},{"label":"Connection Name","field":"connection"},{"label":"Status","field":"status"},{"label":"Log","field":"log"}];
             prevState.migrationData.forEach(row=>{
                 row.source = types.source;
                 row.target = types.target;
@@ -65,10 +68,46 @@ class ProgressTable extends Component {
         });
     }
 
-    createRowData(row, i) {
-        return this.state.fields.map(field=>{
+    downloadLogFile(mapping) {
+        this.queryService.downloadLogFile(mapping).then(resp=>{
+            if(resp.status) {
+                console.error(resp.status);
+            }
+            else {
+                let blob = new Blob([new Uint8Array(resp.content.data)], {
+                    'type': resp.type
+                }), url = window.URL.createObjectURL(blob), link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', resp.fileName);
+                link.setAttribute('hidden', true);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            }
+        }, err=>{
+            console.error(err);
+        });
+    }
+
+    createRowData(row, i, showDownloadBtn) {
+        let fields = showDownloadBtn ? this.state.fields : this.state.fields.slice(0, headers.length - 1);
+        return fields.map(field=>{
             if(['source', 'target', 'connection'].indexOf(field.field) > -1) {
                 return (<TableCell key={i + '_' + field.field} className={field.field}>{this.state.types[field.field]}</TableCell>);
+            }
+            else if(field.field === 'status') {
+                return (
+                    <TableCell key={i + '_' + field.field}>
+                        {row.status === 0 ? <WarningIcon className="warning" title="Not Started" /> : row.status === 1 ? <img className="icon" src={LoadingIcon} title="In Progress" /> : row.status === 2 ? <DoneIcon className="success" title="Completed" /> : <CloseIcon className="failed" title="Failed" />}
+                    </TableCell>
+                );
+            }
+            else if(field.field === 'log') {
+                return (
+                    <TableCell key={i + '_log'}>
+                        <GetAppIcon className="download" title="Download Log" onClick={this.downloadLogFile.bind(this, row)} />
+                    </TableCell>
+                );
             }
             else {
                 return (<TableCell key={i + '_' + field.field} className={field.field}>{row[field.field]}</TableCell>);
@@ -97,7 +136,11 @@ class ProgressTable extends Component {
                 stats[row.status]++;
             });
             let disableStartBtn = this.props.disableStartBtn && ((stats[2] + stats[3]) !== data.length),
+                showDownloadBtn = (stats[2] + stats[3]) > 0,
                 headers = this.state.fields.map(field=>(<TableCell key={field.label} className={field.field}>{field.label}</TableCell>));
+            if(!showDownloadBtn) {
+                headers.splice(headers.length - 1, 1);
+            }
             return (
                 <div>
                     <Card className="app-card progress-table">
@@ -155,17 +198,13 @@ class ProgressTable extends Component {
                                 <TableHead>
                                     <TableRow>
                                         {headers}
-                                        <TableCell key="Status">Status</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {data.map((row,i)=>(
-                                    <TableRow key={row.key}>
-                                        {this.createRowData.call(this, row, i)}
-                                        <TableCell key={i + '_' + status}>
-                                            {row.status === 0 ? <WarningIcon className="warning" title="Not Started" /> : row.status === 1 ? <img className="icon" src={LoadingIcon} title="In Progress" /> : row.status === 2 ? <DoneIcon className="success" title="Completed" /> : <CloseIcon className="failed" title="Failed" />}
-                                        </TableCell>
-                                    </TableRow>
+                                        <TableRow key={row.key}>
+                                            {this.createRowData.call(this, row, i, showDownloadBtn)}                                        
+                                        </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>

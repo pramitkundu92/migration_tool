@@ -85,6 +85,16 @@ function getMappingTypes(req, res) {
     res.status(200);
 }
 
+function getDataForFileDownload(req, res) {
+    this.dataProvider.getDataForFileDownload(req.body).then(resp=>{
+        res.json(resp);
+        res.status(200);
+    }, err=>{
+        res.json(err);
+        res.status(500);
+    });
+}
+
 // initialize the API routes and associate controllers
 UrlMappings.prototype.init = function() {
     this.router.get('/savedData', getSavedData.bind(this));
@@ -92,6 +102,7 @@ UrlMappings.prototype.init = function() {
     this.router.post('/repository', saveRepositoryInfo.bind(this));
     this.router.post('/startMigration', startMigration.bind(this));
     this.router.get('/getMappingTypes', getMappingTypes.bind(this));
+    this.router.post('/downloadLogFile', getDataForFileDownload.bind(this));
 }
 
 module.exports = UrlMappings;

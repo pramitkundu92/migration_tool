@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const Cache = require('./cache.js');
 const Executor = require('./executor.js');
 
@@ -83,6 +85,28 @@ DataProvider.prototype.startMigration = function(mappings) {
             reject(err);
         });
     });
-}
+};
+
+DataProvider.prototype.getDataForFileDownload = function(mapping) {
+    return new Promise((resolve, reject)=>{
+        let logFileName = Executor.modifyPaths(`${__dirname}/logs/${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`);
+        let stream = fs.createReadStream(logFileName), chunks = [];
+        stream.on('error', err=>{
+            reject({
+                'status': 'File not found'
+            });
+        });
+        stream.on('data', chunk=>{
+            chunks.push(chunk);
+        });
+        stream.on('close', ()=>{
+            resolve({
+                'fileName': `${mapping.repoName}_${mapping.folderName}_${mapping.mappingName}.log`,
+                'type': 'text/plain',
+                'content': Buffer.concat(chunks)
+            });
+        });
+    });
+};
 
 module.exports = DataProvider;

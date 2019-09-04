@@ -10,6 +10,7 @@ export default class QueryService {
         this.savedDataUrl = '/savedData';
         this.migrationUrl = '/startMigration';
         this.typesUrl = '/getMappingTypes';
+        this.downloadUrl = '/downloadLogFile';
     }
 
     getHeaders() {
@@ -77,6 +78,16 @@ export default class QueryService {
     getMappingTypes() {
         return new Promise((resolve, reject)=>{
             axios.get(this.buildUrl(this.typesUrl), this.getExtraOptions()).then(({data})=>{
+                resolve(data);
+            }, err=>{
+                reject(err);
+            });
+        });
+    }
+
+    downloadLogFile(mapping) {
+        return new Promise((resolve, reject)=>{
+            axios.post(this.buildUrl(this.downloadUrl), mapping, this.getExtraOptions()).then(({data})=>{
                 resolve(data);
             }, err=>{
                 reject(err);

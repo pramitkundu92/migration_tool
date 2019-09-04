@@ -121,5 +121,6 @@ module.exports = {
                 'status': 'Started Migration'
             });
         });
-    }
+    },
+    modifyPaths: modifyPaths
 };
