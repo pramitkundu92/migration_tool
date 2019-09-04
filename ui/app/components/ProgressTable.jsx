@@ -105,7 +105,7 @@ class ProgressTable extends Component {
             else if(field.field === 'log') {
                 return (
                     <TableCell key={i + '_log'}>
-                        <GetAppIcon className="download" title="Download Log" onClick={this.downloadLogFile.bind(this, row)} />
+                        {row.status === 2 || row.status === 3 ? <GetAppIcon className="download" title="Download Log" onClick={this.downloadLogFile.bind(this, row)} /> : ''}
                     </TableCell>
                 );
             }
