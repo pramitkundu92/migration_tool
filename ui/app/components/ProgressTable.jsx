@@ -90,7 +90,7 @@ class ProgressTable extends Component {
     }
 
     createRowData(row, i, showDownloadBtn) {
-        let fields = showDownloadBtn ? this.state.fields : this.state.fields.slice(0, headers.length - 1);
+        let fields = showDownloadBtn ? this.state.fields : this.state.fields.slice(0, this.state.fields.length - 1);
         return fields.map(field=>{
             if(['source', 'target', 'connection'].indexOf(field.field) > -1) {
                 return (<TableCell key={i + '_' + field.field} className={field.field}>{this.state.types[field.field]}</TableCell>);
