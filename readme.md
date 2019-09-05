@@ -3,7 +3,7 @@ Project setup and execution: (Assuming Chrome or Firefox is already installed, a
 2. Install Node (version 10.x)
 3. Inside project folder run "npm install"
 4. Inside project/ui folder "run npm install"
-5. Inside project folder run "npm install -- --open" (This will build UI and start server, then open up the application on the default browser)
+5. Inside project folder run "npm start -- --open" (This will build UI and start server, then open up the application on the default browser)
 
 Project structure:
 1. Inside project folder, all node JS server related files are present
